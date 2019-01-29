@@ -2,13 +2,13 @@ function Asteroid(props)
 {
     this._blow = false;
 
-    var MIN_SPEED = 0.1;
-    var MAX_SPEED = 0.06;
+    var MIN_SPEED = 0.2;
+    var MAX_SPEED = 0.12;
 
     var MIN_ROTATION_SPEED = 0.01;
     var MAX_ROTATION_SPEED = 0.004;
 
-    this._ACCELERATION = 0.95;
+    this._ACCELERATION = 0.92;
 
     var uvs = [
         [
@@ -82,6 +82,8 @@ function Asteroid(props)
 
     material.depthTest = false;
     material.depthWrite = false;
+
+    this._material = material;
 
     var geometry1 = new THREE.PlaneBufferGeometry(2, 2, 1);
     geometry1.addAttribute("uv", new THREE.BufferAttribute(new Float32Array(uvs[0]), 2));
@@ -197,6 +199,7 @@ function Asteroid(props)
         ];
 
         piece.speed = Math.random() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+        piece.startSpeed = piece.speed;
         piece.rotationSpeed = (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (MAX_ROTATION_SPEED - MIN_ROTATION_SPEED) + MIN_ROTATION_SPEED);
 
         this.object3D.add(this._pieces[i].object3D);
@@ -222,6 +225,14 @@ Asteroid.prototype.tick = function()
         piece.object3D.position.x = piece.object3D.position.x + piece.normal[0] * piece.speed;
         piece.object3D.position.y = piece.object3D.position.y + piece.normal[1] * piece.speed;
         piece.object3D.rotation.z += piece.rotationSpeed;
+        piece.object3D.scale.x = piece.speed / piece.startSpeed * 0.7 + 0.3;
+        piece.object3D.scale.y = piece.speed / piece.startSpeed * 0.7 + 0.3;
+        this._material.opacity = piece.speed / piece.startSpeed * 0.5 + 0.5;
+
+        if (piece.speed / piece.startSpeed < 0.1)
+        {
+            this._material.opacity = 0;
+        }
 
         piece.speed *= this._ACCELERATION;
     }
