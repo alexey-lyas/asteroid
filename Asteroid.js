@@ -211,18 +211,20 @@ function Asteroid(props)
     {
         var x = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
         var y = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
+        var z = Math.random();
 
-        var vectorLength = Math.sqrt(x * x + y * y);
+        var vectorLength = Math.sqrt(x * x + y * y + z * z);
 
         var normal = [
             x / vectorLength,
-            y / vectorLength
+            y / vectorLength,
+            z / vectorLength
         ];
 
         var speed = Math.random() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
 
         var o = {
-            object3D: this._createSplinter(),
+            object3D: this._createSplinter(props.map, uvs[0], uvs[4]),
             speed: speed * 1.6,
             startSpeed: speed * 1.6,
             normal: normal,
@@ -235,27 +237,27 @@ function Asteroid(props)
     }
 }
 
-Asteroid.prototype._createSplinter = function()
+Asteroid.prototype._createSplinter = function(map, uv1, uv2)
 {
     var rnd = Math.random();
 
-    var color = 0xff0000;
+    var uv = uv1;
 
-    if (rnd <= 0.3)
+    if (rnd >= 0.5)
     {
-        color = 0x00ff00;
-    }
-    else if (rnd >= 0.7)
-    {
-        color = 0xffff00;
+        uv = uv2;
     }
 
-    var geometry = new THREE.PlaneBufferGeometry(0.2, 0.2, 1);
+    var geometry = new THREE.PlaneBufferGeometry(0.3, 0.3, 1);
+    geometry.addAttribute("uv", new THREE.BufferAttribute(new Float32Array(uv), 2));
 
     var material = new THREE.MeshBasicMaterial({
-        color: color,
+        map: map,
         transparent: true
     });
+
+    material.depthTest = false;
+    material.depthWrite = false;
 
     var mesh = new THREE.Mesh(geometry, material);
 
@@ -302,6 +304,7 @@ Asteroid.prototype.tick = function()
 
         splinter.object3D.position.x = splinter.object3D.position.x + splinter.normal[0] * splinter.speed;
         splinter.object3D.position.y = splinter.object3D.position.y + splinter.normal[1] * splinter.speed;
+        splinter.object3D.position.z = splinter.object3D.position.z + splinter.normal[2] * splinter.speed;
         splinter.object3D.rotation.x += splinter.rotationSpeed;
         splinter.object3D.rotation.y += splinter.rotationSpeed;
 
