@@ -8,7 +8,7 @@ function Asteroid(props)
     var MIN_ROTATION_SPEED = 0.01;
     var MAX_ROTATION_SPEED = 0.004;
 
-    this._ACCELERATION = 0.92;
+    this._ACCELERATION = 0.96;
 
     var uvs = [
         [
@@ -227,12 +227,12 @@ Asteroid.prototype.tick = function()
         piece.object3D.rotation.z += piece.rotationSpeed;
         piece.object3D.scale.x = piece.speed / piece.startSpeed * 0.7 + 0.3;
         piece.object3D.scale.y = piece.speed / piece.startSpeed * 0.7 + 0.3;
-        this._material.opacity = piece.speed / piece.startSpeed * 0.5 + 0.5;
+        this._material.opacity = piece.speed / piece.startSpeed;
 
-        if (piece.speed / piece.startSpeed < 0.1)
+        /*if (piece.speed / piece.startSpeed < 0.1)
         {
             this._material.opacity = 0;
-        }
+        }*/
 
         piece.speed *= this._ACCELERATION;
     }
