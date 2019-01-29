@@ -204,7 +204,63 @@ function Asteroid(props)
 
         this.object3D.add(this._pieces[i].object3D);
     }
+
+    this._splinters = [];
+
+    for (var i = 0; i < 18; i++)
+    {
+        var x = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
+        var y = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
+
+        var vectorLength = Math.sqrt(x * x + y * y);
+
+        var normal = [
+            x / vectorLength,
+            y / vectorLength
+        ];
+
+        var speed = Math.random() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+
+        var o = {
+            object3D: this._createSplinter(),
+            speed: speed * 1.6,
+            startSpeed: speed * 1.6,
+            normal: normal,
+            rotationSpeed: (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (MAX_ROTATION_SPEED - MIN_ROTATION_SPEED) + MIN_ROTATION_SPEED) * 10
+        };
+
+        this._splinters.push(o);
+
+        this.object3D.add(o.object3D);
+    }
 }
+
+Asteroid.prototype._createSplinter = function()
+{
+    var rnd = Math.random();
+
+    var color = 0xff0000;
+
+    if (rnd <= 0.3)
+    {
+        color = 0x00ff00;
+    }
+    else if (rnd >= 0.7)
+    {
+        color = 0xffff00;
+    }
+
+    var geometry = new THREE.PlaneBufferGeometry(0.2, 0.2, 1);
+
+    var material = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true
+    });
+
+    var mesh = new THREE.Mesh(geometry, material);
+
+    return mesh;
+};
 
 Asteroid.prototype.blow = function()
 {
@@ -235,5 +291,25 @@ Asteroid.prototype.tick = function()
         }*/
 
         piece.speed *= this._ACCELERATION;
+    }
+
+    for (var i = 0; i < this._splinters.length; i++)
+    {
+        var splinter = this._splinters[i];
+
+        splinter.object3D.position.x = splinter.object3D.position.x + splinter.normal[0] * splinter.speed;
+        splinter.object3D.position.y = splinter.object3D.position.y + splinter.normal[1] * splinter.speed;
+        splinter.object3D.rotation.x += splinter.rotationSpeed;
+        splinter.object3D.rotation.y += splinter.rotationSpeed;
+        //splinter.object3D.rotation.z += splinter.rotationSpeed;
+        //splinter.object3D.scale.x = splinter.speed / splinter.startSpeed * 0.7 + 0.3;
+        //splinter.object3D.scale.y = splinter.speed / splinter.startSpeed * 0.7 + 0.3;
+
+        /*if (piece.speed / piece.startSpeed < 0.1)
+        {
+            this._material.opacity = 0;
+        }*/
+
+        splinter.speed *= this._ACCELERATION;
     }
 };
