@@ -259,6 +259,9 @@ Asteroid.prototype._createSplinter = function()
 
     var mesh = new THREE.Mesh(geometry, material);
 
+    mesh.scale.x = 0;
+    mesh.scale.y = 0;
+
     return mesh;
 };
 
@@ -301,9 +304,9 @@ Asteroid.prototype.tick = function()
         splinter.object3D.position.y = splinter.object3D.position.y + splinter.normal[1] * splinter.speed;
         splinter.object3D.rotation.x += splinter.rotationSpeed;
         splinter.object3D.rotation.y += splinter.rotationSpeed;
-        //splinter.object3D.rotation.z += splinter.rotationSpeed;
-        //splinter.object3D.scale.x = splinter.speed / splinter.startSpeed * 0.7 + 0.3;
-        //splinter.object3D.scale.y = splinter.speed / splinter.startSpeed * 0.7 + 0.3;
+
+        splinter.object3D.scale.x = Math.sin(splinter.speed / splinter.startSpeed * Math.PI);
+        splinter.object3D.scale.y = Math.sin(splinter.speed / splinter.startSpeed * Math.PI);
 
         /*if (piece.speed / piece.startSpeed < 0.1)
         {
