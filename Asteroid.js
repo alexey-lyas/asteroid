@@ -207,7 +207,7 @@ function Asteroid(props)
 
     this._splinters = [];
 
-    for (var i = 0; i < 18; i++)
+    for (var i = 0; i < 36; i++)
     {
         var x = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
         var y = (Math.random() >= 0.5 ? 1 : -1) * Math.random();
@@ -225,8 +225,8 @@ function Asteroid(props)
 
         var o = {
             object3D: this._createSplinter(props.map, uvs[0], uvs[4]),
-            speed: speed * 1.6,
-            startSpeed: speed * 1.6,
+            speed: speed * 1.2,
+            startSpeed: speed * 1.2,
             normal: normal,
             rotationSpeed: (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (MAX_ROTATION_SPEED - MIN_ROTATION_SPEED) + MIN_ROTATION_SPEED) * 10
         };
